@@ -1,0 +1,108 @@
+<html>
+
+<head>
+    <script src="jquery-3.0.0.min.js"></script>
+    <script type="text/javascript" src="materials.js"></script>
+    <script>
+        function calc_armor() {
+            var material_num = 0;
+            var bash_resist = 0;
+            var cut_resist = 0;
+            var acid_resist = 0;
+            var fire_resist = 0;
+            var elec_resist = 0;
+            var chip_resist = 0;
+            for (var i = 0; i < 6; i++) {
+                var value = document.getElementById("material[" + i + "]").value;
+                if (value != "none") {
+                    for (var mat of materials) {
+                        if (mat.ident == value) {
+                            bash_resist += mat.bash_resist;
+                            cut_resist += mat.cut_resist;
+                            acid_resist += mat.acid_resist;
+                            fire_resist += mat.fire_resist;
+                            elec_resist += mat.elec_resist;
+                            chip_resist += mat.chip_resist;
+                            material_num++;
+                        }
+                    }
+                }
+            }
+            if (material_num > 0) {
+                var material_thickness = document.getElementById("material_thickness").value;
+                var env_pro = document.getElementById("env_pro").value;
+                env_pro = env_pro > 10 ? 10 : env_pro;
+                bash_resist = bash_resist * material_thickness / material_num;
+                cut_resist = cut_resist * material_thickness / material_num;
+                acid_resist = acid_resist * material_thickness / material_num * env_pro / 10;
+                fire_resist = fire_resist * material_thickness / material_num * env_pro / 10;
+                elec_resist = elec_resist * material_thickness / material_num * env_pro / 10;
+                chip_resist = chip_resist * material_thickness / material_num;
+            }
+            document.getElementById('bash_resist').innerHTML = bash_resist;
+            document.getElementById('cut_resist').innerHTML = cut_resist;
+            document.getElementById('acid_resist').innerHTML = acid_resist;
+            document.getElementById('fire_resist').innerHTML = fire_resist;
+            document.getElementById('elec_resist').innerHTML = elec_resist;
+        }
+    </script>
+</head>
+
+<body>
+    <h3>防具の防御力計算機</h3>
+    <form name="form">
+        環境防護:
+        <select id="env_pro" onChange="calc_armor()">
+            <option value=0>0</option>
+            <option value=1>1</option>
+            <option value=2>2</option>
+            <option value=3>3</option>
+            <option value=4>4</option>
+            <option value=5>5</option>
+            <option value=6>6</option>
+            <option value=7>7</option>
+            <option value=8>8</option>
+            <option value=9>9</option>
+            <option value=10>10</option>
+        </select>
+        <br> material_thickness:
+        <select id="material_thickness" onChange="calc_armor()">
+            <option value=1>1</option>
+            <option value=2>2</option>
+            <option value=3>3</option>
+            <option value=4>4</option>
+            <option value=5>5</option>
+            <option value=6>6</option>
+            <option value=7>7</option>
+            <option value=8>8</option>
+            <option value=9>9</option>
+            <option value=10>10</option>
+        </select>
+        <br>
+        <script type="text/javascript">
+            for (var i = 0; i < 6; i++) {
+                document.write('material ' + i + ': ');
+                document.write('<select id="material[' + i + ']" onChange="calc_armor()">');
+                document.write('<option value="none">none</option>');
+                for (var mat of materials) {
+                    document.write(
+                        '<option value="' + mat.ident + '")>' + mat.name + '</option>'
+                    );
+                }
+                document.write('</select><br>');
+            }
+        </script>
+    </form>
+    打撃防御：
+    <dvi id=bash_resist></dvi>
+    斬撃防御：
+    <dvi id=cut_resist></dvi>
+    <br> 酸耐性：
+    <dvi id=acid_resist></dvi>
+    炎耐性：
+    <dvi id=fire_resist></dvi>
+    <br> 電撃耐性：
+    <dvi id=elec_resist></dvi>
+</body>
+
+</html>

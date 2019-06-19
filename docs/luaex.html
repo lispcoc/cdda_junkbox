@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>jQuery TIPS</title>
+<style>
+    div.table {
+        display: table;
+    }
+    div.table_hidden {
+        display: table;
+    }
+    div.row {
+        display: table-row;
+    }
+
+    div.row_hidden {
+        display: table-row;
+    }
+
+    div.table>div.row>div {
+        display: table-cell;
+        border-style: groove;
+    }
+
+    div.table_hidden>div.row>div {
+        display: table-cell;
+        border-style: none;
+    }
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+    var result = "";
+    $( function() {
+        $(document).ready(
+        function(){
+            $("#span1").text("データ取得中です");
+            // From: https://itsakura.com/jquery-getjson
+            // 送信先のURL
+            const url = "https://api.github.com/repos/lispcoc/Cataclysm-DDA-luaex/releases";
+    
+            // 送信するデータは、フォームの内容をserialize()しています
+            // serialize()の内容は、cs1=custom1&cs2=custom2です
+            const testData = $("#form1").serialize();
+    
+            // $.getJSONメソッドで通信を行う
+            $.getJSON(url,testData)
+    
+                // doneは、通信に成功した時に実行される
+                // 引数のdata1は、通信で取得したデータ
+                .done(function(releaseList,textStatus,jqXHR) {
+                    releaseList.forEach(release => {
+                        $("#releases").append(
+                            $('<div class="row">').append(
+                                $('<div>').append(
+                                    $('<a>').attr('href', release.html_url).text(release.tag_name)
+                                )
+                            ).append(
+                                $('<div>').text(release.published_at)
+                            )
+                        )
+                    });
+                })
+                // failは、通信に失敗した時に実行される
+                .fail(function(jqXHR, textStatus, errorThrown ) {
+                })
+                // alwaysは、成功/失敗に関わらず実行される
+                .always(function() {
+                });
+        });
+    } );
+</script>
+</head>
+<body>
+    <h2>Cataclysm: DDA LUA Extension</h2>
+    <p>
+        <a href="./index.html">Top</a>
+    </p>
+    <p>
+        0.D開発版で削除されたLuaサポートを復活させたビルドを配布しています。
+        <br> 改造・再配布等ご自由にどうぞ。
+    </p>
+    <h3>ダウンロードリンク</h3>
+    <p>バージョン名4桁が本家のバージョンと対応しています。</p>
+    <div class="table" id="releases">
+        <div class="row">
+            <div>バージョン</div><div>リリース日</div>
+        </div>
+    </div>
+    <h3>ソースコード</h3>
+    <p><a href="https://github.com/lispcoc/Cataclysm-DDA-luaex">GitHub</a></p>
+</body>
+</html>
